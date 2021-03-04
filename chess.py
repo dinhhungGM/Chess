@@ -110,6 +110,18 @@ class Chess:
                     break
         return possibleMove
 
+    def GetQueenPossibleMove(self, x, y):
+        return self.GetBishopPossibleMove(x, y) + self.GetRookPossibleMove(x, y)
+
+    def GetKingPossibleMove(self, x, y):
+        possibleMove = []
+        for direction in self.piecesDirections["K"]:
+            posx, posy = x + direction[0], y + direction[1]
+            if (0 <= posx <= 7 and 0 <= posy <= 7) and \
+                    (self.board[posx][posy][0] != self.board[x][y][0] or self.board[posx][posy] == "00"):
+                possibleMove.append((posx, posy))
+        return possibleMove
+
     def GetPossibleMove(self, x, y):
         square = self.board[x][y]
         if square[1] == "P":
@@ -120,7 +132,10 @@ class Chess:
             return self.GetRookPossibleMove(x, y)
         elif square[1] == "B":
             return self.GetBishopPossibleMove(x, y)
-
+        elif square[1] == "Q":
+            return self.GetQueenPossibleMove(x, y)
+        elif square[1] == "K":
+            return self.GetKingPossibleMove(x, y)
         return []
 
     def IsValidMove(self, start, end):
