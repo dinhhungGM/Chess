@@ -44,20 +44,61 @@ class Chess:
 
             tmp = not tmp
 
-    def GetPawnPossibleMove(self, x, y):
+    def GetPawnPossibleMove(self, x, y, color):
         # params: x, y is current pos of that pawn
         # return: list of possible move of that pawn
+
         possibleMove = []
-        if self.board[x - 1][y] == "00":
-            possibleMove.append((x - 1, y))
-        if x == 6 and self.board[x - 2][y] == "00": # Nam o hang ban dau chua di chuyen
-            possibleMove.append((x - 2, y))
+        if color == "w":
+            if self.board[x - 1][y] == "00":
+                possibleMove.append((x - 1, y))
+            if x == 6 and self.board[x - 2][y] == "00": # Nam o hang ban dau chua di chuyen
+                possibleMove.append((x - 2, y))
+        else:
+            if self.board[x + 1][y] == "00":
+                possibleMove.append((x + 1, y))
+            if x == 1 and self.board[x + 2][y] == "00": # Nam o hang ban dau chua di chuyen
+                possibleMove.append((x + 2, y))
+
+        return possibleMove
+
+    def GetKnightPossibleMove(self, x, y):
+        possibleMove = []
+        for direction in self.piecesDirections["N"]:
+            posx, posy = x + direction[0], y + direction[1]
+            if (0 <= posx <= 7 and 0 <= posy <= 7) and \
+                    (self.board[posx][posy][0] != self.board[x][y][0] or self.board[posx][posy] == "00"):
+                possibleMove.append((posx, posy))
+        return possibleMove
+
+    def GetRookPossibleMove(self, x, y):
+        possibleMove = []
+
+        for direction in self.piecesDirections["R"]:
+            for i in range(1, 8):
+                posx, posy = x + direction[0] * i, y + direction[1] * i
+
+                if (0 <= posx <= 7 and 0 <= posy <= 7):
+                    endPiece = self.board[posx][posy]
+                    if endPiece == "00":  # empty space valid
+                        possibleMove.append((posx, posy))
+                    elif endPiece[0] != self.board[x][y][0]:  # enemy piece is valid
+                        possibleMove.append((posx, posy))
+                        break
+                    else:
+                        break
+                else:  # off broad
+                    break
         return possibleMove
 
     def GetPossibleMove(self, x, y):
         square = self.board[x][y]
         if square[1] == "P":
-            return self.GetPawnPossibleMove(x, y)
+            return self.GetPawnPossibleMove(x, y, square[0])
+        elif square[1] == "N":
+            return self.GetKnightPossibleMove(x, y)
+        elif square[1] == "R":
+            return self.GetRookPossibleMove(x, y)
         return []
 
     def IsValidMove(self, start, end):
