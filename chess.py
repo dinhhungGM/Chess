@@ -62,11 +62,22 @@ class Chess:
                 possibleMove.append((x - 1, y))
             if x == 6 and self.board[x - 2][y] == "00": # Nam o hang ban dau chua di chuyen
                 possibleMove.append((x - 2, y))
+
+            if self.board[x - 1][y - 1][0] == "b": # left
+                possibleMove.append((x-1, y-1))
+            if self.board[x - 1][y + 1][0] == "b": # right
+                possibleMove.append((x-1, y+1))
+
         else:
             if self.board[x + 1][y] == "00":
                 possibleMove.append((x + 1, y))
             if x == 1 and self.board[x + 2][y] == "00": # Nam o hang ban dau chua di chuyen
                 possibleMove.append((x + 2, y))
+
+            if self.board[x + 1][y - 1][0] == "w": # left
+                possibleMove.append((x+1, y-1))
+            if self.board[x + 1][y + 1][0] == "w": # right
+                possibleMove.append((x+1, y+1))
 
         return possibleMove
 
@@ -109,7 +120,7 @@ class Chess:
                     endPiece = self.board[posx][posy]
                     if endPiece == "00":  # empty space valid
                         possibleMove.append((posx, posy))
-                    elif endPiece[0] != self.board[x][y][0]:  # enemy piece is valid
+                    elif endPiece[0] != self.board[x][y][0]:
                         possibleMove.append((posx, posy))
                         break
                     else:
