@@ -13,6 +13,9 @@ class Chess:
                       ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
                       ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
 
+        self.positionKingsAndRook = [[[7, 0], [7, 4], [7, 7]], ## Rook left(far), King, Rook Right(near)
+                              [[0, 0], [0, 4]], [0, 7]]
+
         self.piecesDirections = {"R": ((-1, 0), (0, -1), (1, 0), (0, 1)),
                                  "B": ((-1, -1), (-1, 1), (1, 1), (1, -1)),
                                  "N": ((2, 1), (1, 2), (-1, 2), (-2, 1),
@@ -162,3 +165,48 @@ class Chess:
             self.board[square2[0]][square2[1]] = tmp
             return True
         return False
+
+    def CastlingKingSide(self, square1, square2):
+
+
+        posOfWhiteKing = self.positionKingsAndRook[0][0]
+        posOfBlackKing = self.positionKingsAndRook[1][0]
+
+        kingPos = posOfWhiteKing if square1 == posOfWhiteKing else posOfBlackKing
+
+        if square2 == pg.Vector2(kingPos) + (0, 2):
+            tmp = self.board[kingPos[0]][kingPos[1]]
+            self.board[kingPos[0]][kingPos[1]] = "00"
+            self.board[kingPos[0]][kingPos[1] + 2] = tmp
+            self.board[kingPos[0]][kingPos[1] + 1] = "R"
+            return True
+        return False
+
+    def CastlingQueenSide(self, square1, square2):
+        posOfWhiteKing = self.positionKingsAndRook[0][0]
+        posOfBlackKing = self.positionKingsAndRook[1][0]
+
+        kingPos = posOfWhiteKing if square1 == posOfWhiteKing else posOfBlackKing
+
+        if square2 == pg.Vector2(kingPos) - (0, 2):
+            tmp = self.board[kingPos[0]][kingPos[1]]
+            self.board[kingPos[0]][kingPos[1]] = "00"
+            self.board[kingPos[0]][kingPos[1] - 2] = tmp
+            self.board[kingPos[0]][kingPos[1] - 1] = "R"
+            return True
+        return False
+
+    def CheckSignalSquareToCastling(self, square1, square2):
+        posOfWhiteKing = self.positionKingsAndRook[0][0]
+        posOfBlackKing = self.positionKingsAndRook[1][0]
+        if square1 == posOfWhiteKing or square1 == posOfBlackKing: # Click into white kings or black kings
+            if square2 == pg.Vector2(posOfWhiteKing) + (0, 2) \
+                    or square2 == pg.Vector2(posOfWhiteKing) - (0, 2) \
+                    or square2 == pg.Vector2(posOfBlackKing) - (0, 2) \
+                    or square2 == pg.Vector2(posOfBlackKing) + (0, 2):
+                    return True
+                    # Check castling queenside or kingside for both black and white
+        return False
+
+    def Castling(self, square1, square2):
+        pass
