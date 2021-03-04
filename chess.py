@@ -25,6 +25,14 @@ class Chess:
         self.chessImages = {item.strip(".png"):pg.image.load(f"img/{item}") for item in os.listdir("img")}
         self.moveLog = []
 
+        self.getPiecesPossibleMoves = {"P": self.GetPawnPossibleMove,
+                                       "K": self.GetKingPossibleMove,
+                                       "Q": self.GetQueenPossibleMove,
+                                       "N": self.GetKnightPossibleMove,
+                                       "R": self.GetRookPossibleMove,
+                                       "B": self.GetBishopPossibleMove
+                                       }
+
     def Display(self, displayWindow):
 
         # Draw chess broad
@@ -44,12 +52,12 @@ class Chess:
 
             tmp = not tmp
 
-    def GetPawnPossibleMove(self, x, y, color):
+    def GetPawnPossibleMove(self, x, y):
         # params: x, y is current pos of that pawn
         # return: list of possible move of that pawn
 
         possibleMove = []
-        if color == "w":
+        if self.board[x][y][0] == "w":
             if self.board[x - 1][y] == "00":
                 possibleMove.append((x - 1, y))
             if x == 6 and self.board[x - 2][y] == "00": # Nam o hang ban dau chua di chuyen
@@ -124,19 +132,10 @@ class Chess:
 
     def GetPossibleMove(self, x, y):
         square = self.board[x][y]
-        if square[1] == "P":
-            return self.GetPawnPossibleMove(x, y, square[0])
-        elif square[1] == "N":
-            return self.GetKnightPossibleMove(x, y)
-        elif square[1] == "R":
-            return self.GetRookPossibleMove(x, y)
-        elif square[1] == "B":
-            return self.GetBishopPossibleMove(x, y)
-        elif square[1] == "Q":
-            return self.GetQueenPossibleMove(x, y)
-        elif square[1] == "K":
-            return self.GetKingPossibleMove(x, y)
-        return []
+        try:
+            return self.getPiecesPossibleMoves[square[1]](x, y)
+        except KeyError:
+            return []
 
     def IsValidMove(self, start, end):
         if end in self.GetPossibleMove(start[0], start[1]):
