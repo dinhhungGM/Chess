@@ -91,6 +91,25 @@ class Chess:
                     break
         return possibleMove
 
+    def GetBishopPossibleMove(self, x, y):
+        possibleMove = []
+        for direction in self.piecesDirections["B"]:
+            for i in range(1, 8):
+                posx, posy = x + direction[0] * i, y + direction[1] * i
+
+                if (0 <= posx <= 7 and 0 <= posy <= 7):
+                    endPiece = self.board[posx][posy]
+                    if endPiece == "00":  # empty space valid
+                        possibleMove.append((posx, posy))
+                    elif endPiece[0] != self.board[x][y][0]:  # enemy piece is valid
+                        possibleMove.append((posx, posy))
+                        break
+                    else:
+                        break
+                else:  # off broad
+                    break
+        return possibleMove
+
     def GetPossibleMove(self, x, y):
         square = self.board[x][y]
         if square[1] == "P":
@@ -99,6 +118,9 @@ class Chess:
             return self.GetKnightPossibleMove(x, y)
         elif square[1] == "R":
             return self.GetRookPossibleMove(x, y)
+        elif square[1] == "B":
+            return self.GetBishopPossibleMove(x, y)
+
         return []
 
     def IsValidMove(self, start, end):
