@@ -37,7 +37,10 @@ def GameLoop():
 
 
                 possbileMoves = ChessObj.GetPossibleMove(x, y)
-                displayPossibleMove = [pos for pos in possbileMoves]
+                try:
+                    displayPossibleMove = [pos for pos in possbileMoves]
+                except TypeError:
+                    displayPossibleMove = []
 
         # Draw Possible move
         for pos in displayPossibleMove:
@@ -45,9 +48,13 @@ def GameLoop():
                                                         (pos[0] + .5) * ChessObj.sizeOfSquare), 10)
 
         if len(playerClicks) >= 2:
-            if ChessObj.Move(playerClicks[len(playerClicks) - 2], playerClicks[len(playerClicks) - 1]):
+            if ChessObj.Move(playerClicks[len(playerClicks) - 2], playerClicks[len(playerClicks) - 1], DISPLAYWINDOW):
                 playerClicks = []
                 sqSelected = ()
+            if ChessObj.isPromotion:
+                if ChessObj.Move(playerClicks[len(playerClicks) - 2], playerClicks[len(playerClicks) - 1], DISPLAYWINDOW, sqSelected):
+                    playerClicks = []
+                    sqSelected = ()
 
 
         # Draw Bound Red Square
